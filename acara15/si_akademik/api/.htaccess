@@ -1,0 +1,3 @@
+# Agar /api/mahasiswa (tanpa .php) dan /api/mahasiswa?id=1 bisa diakses.
+RewriteEngine On
+RewriteRule ^mahasiswa/?$ mahasiswa.php [L,QSA]
