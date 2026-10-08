@@ -5,7 +5,10 @@ class Router
 {
     public static function dispatch(array $routes, string $method, string $uri): void
     {
-        foreach ($routes[$method] ?? [] as $pattern => $route) {
+        // Route khusus method + route 'ANY' (semua method; dipakai API, method dipilah di controller)
+        $candidates = ($routes[$method] ?? []) + ($routes['ANY'] ?? []);
+
+        foreach ($candidates as $pattern => $route) {
             // '/mahasiswa/{id}/edit' -> regex dengan named group (id = angka)
             $regex = '#^' . preg_replace('#\{(\w+)\}#', '(?P<$1>\d+)', $pattern) . '$#';
 
@@ -28,6 +31,11 @@ class Router
             // Container membuat controller + menyuntikkan dependency-nya (DI)
             $controller = Container::make($controllerClass);
             $controller->$action(...$params);
+            return;
+        }
+
+        if (str_starts_with($uri, '/api/')) {
+            JsonResponse::send(false, 'Endpoint tidak ditemukan', null, 404);
             return;
         }
 

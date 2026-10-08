@@ -43,4 +43,11 @@ return [
         '/matakuliah/{id}/update' => ['MataKuliahController', 'update', $auth],
         '/matakuliah/{id}/delete' => ['MataKuliahController', 'destroy', $auth],
     ],
+
+    // API (JSON, tanpa login) - Acara 15.
+    // GET /api/mahasiswa, GET /api/mahasiswa?id=1, POST /api/mahasiswa.
+    // Method dipilah di dalam controller; method lain dijawab 405.
+    'ANY' => [
+        '/api/mahasiswa'         => ['Api\MahasiswaApiController', 'handle'],
+    ],
 ];

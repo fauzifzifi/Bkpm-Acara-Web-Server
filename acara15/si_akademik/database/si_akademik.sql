@@ -59,9 +59,3 @@ INSERT IGNORE INTO matakuliah (kode, nama, sks, prodi_id) VALUES
     ('TI101', 'Pemrograman Dasar', 3, 1),
     ('TI102', 'Basis Data',        3, 1),
     ('SI101', 'Pengantar SI',      2, 2);
-
--- Acara 15: data contoh API (sama dengan modul: 23001-23003). Aman dijalankan ulang.
-INSERT IGNORE INTO mahasiswa (nim, nama, email, prodi_id, angkatan) VALUES
-    ('23001', 'Budi', 'budi@gmail.com', 1, 2023),
-    ('23002', 'Siti', 'siti@gmail.com', 1, 2023),
-    ('23003', 'Andi', 'andi@gmail.com', 1, 2023);

@@ -37,7 +37,7 @@ class MahasiswaService
         return $this->repo->paginate($search, $page);
     }
 
-    /** @return Mahasiswa[] seluruh mahasiswa (dipakai API). */
+    /** Seluruh mahasiswa tanpa pagination (dipakai API). */
     public function all(): array
     {
         return $this->repo->all();
