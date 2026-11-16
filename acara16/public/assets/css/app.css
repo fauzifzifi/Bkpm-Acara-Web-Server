@@ -1,0 +1,17 @@
+/* public/assets/css/app.css
+   Custom style tambahan di atas Bootstrap agar tampilan konsisten
+   di seluruh halaman (Home, Auth, Dashboard, Mahasiswa). */
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main.container {
+  flex: 1 0 auto;
+}
+
+.navbar-brand {
+  font-weight: 600;
+}
