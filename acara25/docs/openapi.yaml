@@ -1,0 +1,229 @@
+openapi: 3.0.0
+info:
+  title: API Sistem Informasi Akademik
+  version: 1.0.0
+  description: API untuk autentikasi dan pengelolaan data mahasiswa.
+
+servers:
+  - url: http://localhost/acara_22/public
+
+tags:
+  - name: Auth
+  - name: Mahasiswa
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    UserCredentials:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+          example: admin
+        password:
+          type: string
+          format: password
+          example: rahasia123
+
+    RegisterRequest:
+      type: object
+      required:
+        - username
+        - email
+        - password
+      properties:
+        username:
+          type: string
+          example: admin
+        email:
+          type: string
+          format: email
+          example: admin@example.com
+        password:
+          type: string
+          format: password
+          example: rahasia123
+
+    MahasiswaRequest:
+      type: object
+      required:
+        - nim
+        - nama
+        - prodi
+      properties:
+        nim:
+          type: string
+          minLength: 9
+          maxLength: 9
+          pattern: '^[0-9]{9}$'
+          example: '123456789'
+        nama:
+          type: string
+          example: Budi Santoso
+        prodi:
+          type: string
+          example: Teknik Informatika
+
+    Mahasiswa:
+      allOf:
+        - $ref: '#/components/schemas/MahasiswaRequest'
+        - type: object
+          properties:
+            id:
+              type: integer
+              example: 5
+            created_at:
+              type: string
+              example: '2026-11-01 10:00:00'
+
+    ApiResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: Data berhasil diambil
+        data:
+          nullable: true
+        timestamp:
+          type: string
+          format: date-time
+
+paths:
+  /register:
+    post:
+      tags:
+        - Auth
+      summary: Registrasi pengguna
+      description: AuthController::register
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          description: Registrasi berhasil
+        '400':
+          description: Data registrasi tidak lengkap
+
+  /login:
+    post:
+      tags:
+        - Auth
+      summary: Autentikasi pengguna
+      description: AuthController::login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCredentials'
+      responses:
+        '200':
+          description: Login berhasil
+        '401':
+          description: Username atau password salah
+
+  /mahasiswa:
+    get:
+      tags:
+        - Mahasiswa
+      summary: Mengambil data mahasiswa
+      description: MahasiswaController::index
+      parameters:
+        - name: id
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: ID mahasiswa. Jika tidak diisi, seluruh data dikembalikan.
+      responses:
+        '200':
+          description: Data berhasil diambil
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '404':
+          description: Data tidak ditemukan
+
+    post:
+      tags:
+        - Mahasiswa
+      summary: Menambahkan data mahasiswa
+      description: MahasiswaController::store
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MahasiswaRequest'
+      responses:
+        '201':
+          description: Data berhasil ditambahkan
+        '400':
+          description: Field wajib diisi
+        '401':
+          description: Token tidak ditemukan atau tidak valid
+        '422':
+          description: Format NIM tidak valid
+
+    put:
+      tags:
+        - Mahasiswa
+      summary: Memperbarui data mahasiswa
+      description: MahasiswaController::update
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: ID mahasiswa
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MahasiswaRequest'
+      responses:
+        '200':
+          description: Data berhasil diperbarui
+        '401':
+          description: Token tidak ditemukan atau tidak valid
+
+    delete:
+      tags:
+        - Mahasiswa
+      summary: Menghapus data mahasiswa
+      description: MahasiswaController::destroy
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: ID mahasiswa
+      responses:
+        '200':
+          description: Data berhasil dihapus
+        '401':
+          description: Token tidak ditemukan atau tidak valid
